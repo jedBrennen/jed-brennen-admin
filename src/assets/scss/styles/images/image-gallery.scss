@@ -1,0 +1,65 @@
+@import 'assets/scss/styles/helpers/screen-helpers.scss';
+
+.image-gallery {
+  display: flex;
+  justify-content: space-between;
+
+  @include sm {
+    margin-right: calc(-15px - 1rem);
+  }
+
+  @include xs {
+    justify-content: space-evenly;
+  }
+
+  &__image {
+    border-radius: 4px;
+    max-height: 10rem;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    flex-grow: 1;
+
+    @include xs {
+      width: 100%;
+      max-height: 20rem;
+      height: auto;
+      object-fit: cover;
+    }
+
+    &-overlay {
+      position: relative;
+      display: flex;
+    }
+
+    &-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      flex-basis: auto;
+      margin-bottom: 1rem;
+
+      @include sm {
+        margin-right: 1rem;
+      }
+    }
+
+    &-delete {
+      transition: opacity 0.2s ease-in-out;
+      opacity: 0;
+      position: absolute;
+      color: white;
+      cursor: pointer;
+      padding: 0.6rem;
+      right: 0;
+      top: 0;
+    }
+
+    &-container:hover &-delete {
+      opacity: 1;
+    }
+
+    &-description.form-group {
+      margin-bottom: 0;
+    }
+  }
+}

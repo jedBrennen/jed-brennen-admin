@@ -2,8 +2,9 @@
 $font-size-base: 0.875rem !default;
 $line-height-lg: 3.375 !default;
 
-@import '~bootstrap/scss/bootstrap.scss';
-@import './paper-kit/paper-kit.scss';
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'paper-kit/paper-kit.scss';
+@import 'styles/global-fixes.scss';
 
 body {
   margin: 0;
@@ -12,6 +13,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body#tinymce {
+  padding: 0.375rem 0.75rem;
+}
+
+.tox.tox-tinymce {
+  border-radius: 4px;
 }
 
 code {

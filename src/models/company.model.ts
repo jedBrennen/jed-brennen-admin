@@ -1,6 +1,6 @@
-import { FirebaseModel } from './firebase.model';
+import FirebaseModel from 'models/firebase.model';
 
-export interface Company extends FirebaseModel {
+export default interface Company extends FirebaseModel {
   name: string;
   shortDescription: string;
   longDescription: string;

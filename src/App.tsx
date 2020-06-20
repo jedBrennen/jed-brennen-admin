@@ -10,9 +10,10 @@ import AppNavbar from 'components/AppNavbar';
 import ProtectedRoute from 'components/ProtectedRoute';
 import Index from 'views/Index';
 import Companies from 'views/Comapnies';
-import Projects from 'views/Projects';
+import Projects from 'views/Projects/Projects';
 import About from 'views/About';
 import Login from 'views/Login';
+import { INDEX, ABOUT, PROJECTS, COMPANIES, LOGIN } from 'constants/routes';
 
 interface AppState {
   userData: UserData;
@@ -51,24 +52,25 @@ export default class App extends Component<{}, AppState> {
             <Switch>
               <ProtectedRoute
                 exact
-                path="/"
+                path={INDEX}
                 render={(props) => <Index {...props} />}
               />
               <ProtectedRoute
-                path="/about"
+                path={ABOUT}
                 render={(props) => <About {...props} />}
               />
               <ProtectedRoute
-                path="/companies"
-                render={(props) => <Companies {...props} />}
-              />
-              <ProtectedRoute
-                path="/projects"
+                path={PROJECTS}
                 render={(props) => <Projects {...props} />}
               />
-              <Route path="/login" render={(props) => <Login {...props} />} />
-              <Redirect to="/login" />
+              <ProtectedRoute
+                path={COMPANIES}
+                render={(props) => <Companies {...props} />}
+              />
+              <Route path={LOGIN} render={(props) => <Login {...props} />} />
+              <Redirect to={LOGIN} />
             </Switch>
+            <div className="m-4"></div>
           </BrowserRouter>
         </UserContext.Provider>
       </FirebaseContext.Provider>

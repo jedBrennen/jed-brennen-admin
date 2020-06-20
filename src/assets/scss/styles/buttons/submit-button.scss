@@ -1,0 +1,7 @@
+@import 'assets/scss/styles/helpers/screen-helpers.scss';
+
+.submit-button {
+  @include xs {
+    width: 100%;
+  }
+}

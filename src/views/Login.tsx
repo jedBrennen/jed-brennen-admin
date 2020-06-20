@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Container, Row, Card, Form, Button, Spinner } from 'react-bootstrap';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { Container, Row, Card, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import AuthService from 'services/auth.service';
-import 'assets/scss/styles/login/login.scss';
 import FirebaseService, {
   FirebaseContext,
   UserContext,
 } from 'services/firebase.service';
-import { Redirect, RouteComponentProps } from 'react-router';
+import SubmitButton from 'components/Buttons/SubmitButton';
+
+import 'assets/scss/styles/login/login.scss';
 
 interface LoginProps {
   from: Location;
@@ -23,6 +25,13 @@ interface LoginFormValues {
   email: string;
   password: string;
 }
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email')
+    .required('Please enter your email.'),
+  password: Yup.string().required('Please enter your password.'),
+});
 
 export default class Login extends Component<RouteComponentProps, LoginState> {
   static contextType = FirebaseContext;
@@ -49,18 +58,10 @@ export default class Login extends Component<RouteComponentProps, LoginState> {
             return <Redirect to={from} />;
           }
 
-          const LoginSchema = Yup.object().shape({
-            email: Yup.string()
-              .email('Invalid email')
-              .required('Please enter your email.'),
-            password: Yup.string().required('Please enter your password.'),
-          });
-
-          let initialValues: LoginFormValues = {
+          const initialValues: LoginFormValues = {
             email: '',
             password: '',
           };
-
           return (
             <Container className="h-100">
               <Row className="justify-content-center align-items-center h-100">
@@ -118,24 +119,11 @@ export default class Login extends Component<RouteComponentProps, LoginState> {
                               {props.errors.password}
                             </span>
                           </Form.Group>
-                          <Button
-                            variant="primary"
-                            className="float-right"
-                            type="submit"
-                            disabled={props.isSubmitting}
-                          >
-                            {props.isSubmitting && (
-                              <Spinner
-                                className="mr-3"
-                                as="span"
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                              />
-                            )}
-                            {props.isSubmitting ? 'Logging In' : 'Login'}
-                          </Button>
+                          <SubmitButton
+                            label="Save"
+                            submittinglabel="Saving"
+                            isSubmitting={props.isSubmitting}
+                          />
                         </Form>
                       )}
                     </Formik>
@@ -154,8 +142,8 @@ export default class Login extends Component<RouteComponentProps, LoginState> {
     await this.authService
       .signIn(values.email, values.password)
       .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        const errorCode = error.code;
+        let errorMessage = error.message;
         switch (errorCode) {
           case 'auth/invalid-email':
           case 'auth/wrong-password':

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, RouteProps, Redirect } from 'react-router-dom';
 import { UserContext } from 'services/firebase.service';
+import { LOGIN } from 'constants/routes';
 
 interface ProtectedRouteProps extends RouteProps {
   condition?: (user: firebase.User | null) => boolean;
@@ -27,7 +28,7 @@ export default class ProtectedRoute extends Component<
                   render && render(props)
                 ) : (
                   <Redirect
-                    to={{ pathname: '/login', state: { from: location } }}
+                    to={{ pathname: LOGIN, state: { from: location } }}
                   />
                 )
               }

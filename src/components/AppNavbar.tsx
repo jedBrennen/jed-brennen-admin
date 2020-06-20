@@ -6,21 +6,38 @@ import FirebaseService, {
   FirebaseContext,
   UserContext,
 } from 'services/firebase.service';
+import 'assets/scss/styles/app-navbar.scss';
+// Fixes issue with @types not being found
+// tslint:disable-next-line: no-var-requires
+const Headroom = require('headroom.js');
 
 export default class AppNavbar extends Component {
   static contextType = FirebaseContext;
   public context!: React.ContextType<typeof FirebaseContext>;
   private authService: AuthService;
+  private navbarRef: React.RefObject<any>;
 
   constructor(props: {}, context: FirebaseService) {
     super(props);
 
     this.authService = new AuthService(context);
+    this.navbarRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const headroom = new Headroom(this.navbarRef.current, {
+      offset: 71,
+      tolerance: {
+        up: 7,
+        down: 0,
+      },
+    });
+    headroom.init();
   }
 
   render() {
     return (
-      <Navbar bg="primary" expand="lg">
+      <Navbar ref={this.navbarRef} bg="primary" expand="lg" fixed="top">
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>Jed Brennen Admin</Navbar.Brand>

@@ -1,0 +1,54 @@
+.image {
+  &-input {
+    display: none;
+  }
+
+  &-upload {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover,
+    &--drag-hovering {
+      border-color: inherit;
+
+      & .image-upload {
+        &__icon {
+          color: inherit;
+        }
+      }
+    }
+
+    &--submitting {
+      cursor: progress;
+      display: block;
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+    }
+
+    &--disabled,
+    &--submitting {
+      border-color: #ccc !important;
+
+      & .image-upload {
+        &__icon {
+          color: #ccc !important;
+        }
+      }
+    }
+
+    &__icon {
+      color: #ccc;
+    }
+  }
+}

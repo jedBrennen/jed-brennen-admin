@@ -1,0 +1,40 @@
+.pill-list {
+  &--disabled {
+    pointer-events: none;
+  }
+
+  &__pill {
+    cursor: default;
+    transition: all 0.3s ease 0s;
+
+    &:hover {
+      padding-right: 1.5rem;
+    }
+
+    &:hover &-close {
+      opacity: 1;
+      margin-left: 0.2rem;
+    }
+
+    &-input {
+      border: none;
+      font-family: inherit;
+      font-weight: inherit;
+      vertical-align: top;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &-close {
+      position: absolute;
+      transition: all 0.3s ease 0s;
+      opacity: 0;
+      cursor: pointer;
+      padding: 0.3rem;
+      margin-top: -0.3rem;
+      margin-left: -0.3rem;
+    }
+  }
+}

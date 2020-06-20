@@ -1,0 +1,19 @@
+body {
+  padding-top: 71px;
+}
+
+.headroom {
+  will-change: transform;
+  transition: transform 0.5s ease-in-out;
+
+  &--pinned {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    transform: translateY(0%);
+  }
+
+  &--unpinned {
+    transform: translateY(-100%);
+  }
+}
