@@ -29,10 +29,10 @@ export default class Image extends FirebaseModel {
         delete data.file;
         return data;
       },
-      fromFirestore(
+      fromFirestore: (
         snapshot: firebase.firestore.QueryDocumentSnapshot,
         options: firebase.firestore.SnapshotOptions
-      ): Image {
+      ): Image => {
         return FirebaseModel.fromFirestore<Image>(snapshot, options);
       },
     };

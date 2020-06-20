@@ -4,8 +4,6 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 
-import FirebaseModel from 'models/firebase.model';
-
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -37,18 +35,13 @@ export default class FirebaseService {
 
     return FirebaseService.instance;
   }
-
-  public static mapFirebaseData<T extends FirebaseModel>(
-    doc: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
-  ): T {
-    return { id: doc.id, ...doc.data() } as T;
-  }
 }
 
 const FirebaseContext = React.createContext<FirebaseService>(
   FirebaseService.getInstance()
 );
 
+// tslint:disable-next-line: max-classes-per-file
 class UserData {
   public user: firebase.User | null;
   public isLoaded: boolean;
@@ -66,14 +59,15 @@ interface FirebaseUserConsumerProps {
   children: (firebase: FirebaseService, user: UserData) => ReactElement;
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class FirebaseUserConsumer extends Component<FirebaseUserConsumerProps> {
   render() {
     return (
       <FirebaseContext.Consumer>
-        {(firebase) => (
+        {(fb) => (
           <UserContext.Consumer>
             {(user) => {
-              return this.props.children(firebase, user);
+              return this.props.children(fb, user);
             }}
           </UserContext.Consumer>
         )}

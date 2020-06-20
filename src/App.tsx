@@ -9,7 +9,7 @@ import FirebaseService, {
 import AppNavbar from 'components/AppNavbar';
 import ProtectedRoute from 'components/ProtectedRoute';
 import Index from 'views/Index';
-import Companies from 'views/Comapnies';
+import Companies from 'views/Companies/Companies';
 import Projects from 'views/Projects/Projects';
 import About from 'views/About';
 import Login from 'views/Login';

@@ -16,10 +16,13 @@ export default class ProjectService {
   public async getProject(projectId: string) {
     const projectDoc = this.collection.doc(projectId);
     const project = (
-      await projectDoc.withConverter(Project.converter).get()
+      await projectDoc.withConverter<Project>(Project.converter).get()
     ).data();
     const imageDocs = (
-      await projectDoc.collection('images').withConverter(Image.converter).get()
+      await projectDoc
+        .collection('images')
+        .withConverter<Image>(Image.converter)
+        .get()
     ).docs;
     if (project) {
       project.images = imageDocs.map((imageDoc) => imageDoc.data());

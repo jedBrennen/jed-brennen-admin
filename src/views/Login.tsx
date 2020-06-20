@@ -121,7 +121,7 @@ export default class Login extends Component<RouteComponentProps, LoginState> {
                           </Form.Group>
                           <SubmitButton
                             label="Save"
-                            submittinglabel="Saving"
+                            submittingLabel="Saving"
                             isSubmitting={props.isSubmitting}
                           />
                         </Form>

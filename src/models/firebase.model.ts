@@ -12,7 +12,10 @@ export default abstract class FirebaseModel {
   public static get converter(): firebase.firestore.FirestoreDataConverter<
     any
   > {
-    throw new Error('Converter not implemented!');
+    return {
+      toFirestore: this.toFirestore,
+      fromFirestore: this.fromFirestore,
+    };
   }
 
   protected static toFirestore<T extends FirebaseModel>(

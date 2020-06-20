@@ -5,10 +5,10 @@ import Image, { ImageSchema } from 'models/image.model';
 
 export default class Project extends FirebaseModel {
   public title: string;
-  public shortDescription?: string;
-  public longDescription?: string;
   public technology: string[];
   public images: Image[];
+  public shortDescription?: string;
+  public longDescription?: string;
 
   constructor(
     id: string,
@@ -36,10 +36,10 @@ export default class Project extends FirebaseModel {
         delete data.images;
         return data;
       },
-      fromFirestore(
+      fromFirestore: (
         snapshot: firebase.firestore.QueryDocumentSnapshot,
         options: firebase.firestore.SnapshotOptions
-      ): Project {
+      ): Project => {
         const project = FirebaseModel.fromFirestore<Project>(snapshot, options);
         project.images = [];
         return project;

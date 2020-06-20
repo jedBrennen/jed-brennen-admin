@@ -6,7 +6,7 @@ import 'assets/scss/styles/buttons/submit-button.scss';
 interface SubmitButtonProps {
   label: string;
   isSubmitting: boolean;
-  submittinglabel?: string;
+  submittingLabel?: string;
   className?: string;
 }
 
@@ -31,7 +31,7 @@ export default class SubmitButton extends Component<SubmitButtonProps> {
             />
           )}
           {this.props.isSubmitting
-            ? this.props.submittinglabel ?? this.props.label
+            ? this.props.submittingLabel ?? this.props.label
             : this.props.label}
         </Button>
       </div>

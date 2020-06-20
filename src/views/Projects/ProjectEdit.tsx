@@ -92,22 +92,7 @@ export default class ProjectEdit extends Component<
     }
     return (
       <Container className="h-100 pt-4">
-        <Alert
-          show={this.state.showError && !!this.state.saveError}
-          onClose={() => this.setState({ showError: false })}
-          variant="danger"
-          dismissible
-        >
-          {this.state.saveError}
-        </Alert>
-        <Alert
-          show={this.state.showSuccess && !!this.state.saveSuccess}
-          onClose={() => this.setState({ showSuccess: false })}
-          variant="success"
-          dismissible
-        >
-          {this.state.saveSuccess}
-        </Alert>
+        {this.alerts}
         <Formik
           initialValues={
             this.newProject ? this.emptyProject : this.state.project!
@@ -184,20 +169,14 @@ export default class ProjectEdit extends Component<
                       images={props.values.images}
                       isValid={props.isValid}
                       childrenPosition="AFTER"
-                      onUpdate={(index, image) =>
-                        arrayHelpers.handleReplace(index, image)()
-                      }
-                      onRemove={(index) => arrayHelpers.remove(index)}
+                      onUpdate={arrayHelpers.replace}
+                      onRemove={arrayHelpers.remove}
                       disabled={props.isSubmitting}
                       editing
                     >
                       <ImageUpload
                         className="mr-sm-3 mb-3"
-                        onUpload={(images, files) => {
-                          images.forEach((image) =>
-                            arrayHelpers.handlePush(image)()
-                          );
-                        }}
+                        onUpload={(images) => images.forEach(arrayHelpers.push)}
                         disabled={props.isSubmitting}
                       />
                     </ImageGallery>
@@ -207,13 +186,36 @@ export default class ProjectEdit extends Component<
               {props.isSubmitting && this.imageUploadProgress}
               <SubmitButton
                 label={this.newProject ? 'Create' : 'Save'}
-                submittinglabel={this.newProject ? 'Creating' : 'Saving'}
+                submittingLabel={this.newProject ? 'Creating' : 'Saving'}
                 isSubmitting={props.isSubmitting}
               />
             </Form>
           )}
         </Formik>
       </Container>
+    );
+  }
+
+  private get alerts() {
+    return (
+      <>
+        <Alert
+          show={this.state.showError && !!this.state.saveError}
+          onClose={() => this.setState({ showError: false })}
+          variant="danger"
+          dismissible
+        >
+          {this.state.saveError}
+        </Alert>
+        <Alert
+          show={this.state.showSuccess && !!this.state.saveSuccess}
+          onClose={() => this.setState({ showSuccess: false })}
+          variant="success"
+          dismissible
+        >
+          {this.state.saveSuccess}
+        </Alert>
+      </>
     );
   }
 

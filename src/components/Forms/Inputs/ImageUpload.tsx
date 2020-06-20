@@ -8,7 +8,7 @@ import Image from 'models/image.model';
 import 'assets/scss/styles/forms/inputs/image-upload.scss';
 
 interface ImageUploadProps {
-  onUpload: (images: Image[], files: File[]) => void;
+  onUpload: (images: Image[]) => void;
   className?: string;
   disabled: boolean;
 }
@@ -136,7 +136,7 @@ export default class ImageUpload extends Component<
           );
         });
         const newImages = await Promise.all(promises);
-        this.props.onUpload(newImages, files);
+        this.props.onUpload(newImages);
       }
     } else {
       alert('Your browser does not support File API');
