@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Form, Spinner, Alert, ProgressBar } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
-import { Formik, FieldArray } from 'formik';
+import { Formik, FieldArray, FormikHelpers } from 'formik';
 import { Editor } from '@tinymce/tinymce-react';
 
 import FirebaseService, { FirebaseContext } from 'services/firebase.service';
 import ProjectService from 'services/project.service';
 import StorageService from 'services/storage.service';
+import { PROJECT_ADD, PROJECTS } from 'constants/routes';
 import Project, { ProjectSchema } from 'models/project.model';
 import Image from 'models/image.model';
 import SubmitButton from 'components/Buttons/SubmitButton';
@@ -29,6 +30,10 @@ interface ProjectPathParams {
   projectId: string;
 }
 
+interface ProjectLocationState {
+  newProjectTitle?: string;
+}
+
 export default class ProjectEdit extends Component<
   RouteComponentProps,
   ProjectState
@@ -37,10 +42,13 @@ export default class ProjectEdit extends Component<
   public context!: React.ContextType<typeof FirebaseContext>;
   private projectService: ProjectService;
   private storageService: StorageService;
+  private newProject: boolean;
   private emptyProject: Project = {
     id: '',
     fromServer: false,
     title: '',
+    shortDescription: '',
+    longDescription: '',
     technology: [],
     images: [],
   };
@@ -50,15 +58,32 @@ export default class ProjectEdit extends Component<
 
     this.projectService = new ProjectService(context);
     this.storageService = new StorageService(context);
+    this.newProject = props.match.path === PROJECT_ADD;
     this.state = {
-      isLoading: false,
+      isLoading: !this.newProject,
       showError: false,
       showSuccess: false,
     };
   }
 
   componentDidMount() {
-    this.getProject();
+    !this.newProject && this.getProject();
+  }
+
+  componentDidUpdate(prevProps: RouteComponentProps) {
+    if (prevProps !== this.props) {
+      const newProjectTitle = (this.props.location
+        .state as ProjectLocationState)?.newProjectTitle;
+      const showSuccess = !!newProjectTitle;
+      this.newProject = !showSuccess;
+      this.setState({
+        showSuccess,
+        saveSuccess: showSuccess
+          ? `New Project ${newProjectTitle} Added`
+          : undefined,
+      });
+      this.getProject();
+    }
   }
 
   render() {
@@ -84,14 +109,22 @@ export default class ProjectEdit extends Component<
           {this.state.saveSuccess}
         </Alert>
         <Formik
-          initialValues={this.state.project ?? this.emptyProject}
+          initialValues={
+            this.newProject ? this.emptyProject : this.state.project!
+          }
           validationSchema={ProjectSchema}
           validateOnChange={false}
-          validateOnBlur={false}
-          validateOnMount={false}
-          onSubmit={(project) =>
-            this.saveProject(this.state.project ?? this.emptyProject, project)
-          }
+          onSubmit={(project, helpers) => {
+            if (this.newProject) {
+              this.createProject(project, helpers);
+            } else {
+              this.saveProject(
+                this.state.project ?? this.emptyProject,
+                project,
+                helpers
+              );
+            }
+          }}
         >
           {(props) => (
             <Form
@@ -173,8 +206,8 @@ export default class ProjectEdit extends Component<
               </Form.Group>
               {props.isSubmitting && this.imageUploadProgress}
               <SubmitButton
-                label="Save"
-                submittinglabel="Saving"
+                label={this.newProject ? 'Create' : 'Save'}
+                submittinglabel={this.newProject ? 'Creating' : 'Saving'}
                 isSubmitting={props.isSubmitting}
               />
             </Form>
@@ -219,16 +252,44 @@ export default class ProjectEdit extends Component<
       match: { params },
     } = this.props;
     const { projectId } = params as ProjectPathParams;
-
     if (projectId) {
       this.setState({ isLoading: true });
-      this.projectService
-        .getProject(projectId)
-        .then((project) => this.setState({ project, isLoading: false }));
+      this.projectService.getProject(projectId).then((project) => {
+        this.setState({ project, isLoading: false });
+      });
     }
   }
 
-  private async saveProject(initialProject: Project, project: Project) {
+  private async createProject(
+    project: Project,
+    helpers: FormikHelpers<Project>
+  ) {
+    this.setState({
+      showError: false,
+      showSuccess: false,
+    });
+    try {
+      await this.uploadImages(project);
+      const projectId = await this.projectService.createProject(project);
+      this.setState({
+        uploadProgress: new Map<string, number>(),
+      });
+      helpers.setSubmitting(false);
+      const historyState: ProjectLocationState = {
+        newProjectTitle: project.title,
+      };
+      this.props.history.push(`${PROJECTS}/${projectId}`, historyState);
+    } catch (error) {
+      helpers.setSubmitting(false);
+      this.handleError(error);
+    }
+  }
+
+  private async saveProject(
+    initialProject: Project,
+    project: Project,
+    helpers: FormikHelpers<Project>
+  ) {
     this.setState({
       showError: false,
       showSuccess: false,
@@ -243,27 +304,27 @@ export default class ProjectEdit extends Component<
     await this.updateProject(project, imagesToDelete);
     await this.deleteImages(imagesToDelete, project.id);
     const newProject = await this.projectService.getProject(project.id);
-    this.setState({ project: newProject });
+    helpers.setValues(newProject!, false);
+    this.setState({
+      project: newProject,
+      uploadProgress: new Map<string, number>(),
+    });
+    helpers.setSubmitting(false);
   }
 
-  private updateProject(project: Project, imagesToDelete?: Image[]) {
-    return this.projectService
-      .updateProject(project, imagesToDelete)
-      .then(() =>
-        this.setState({
-          saveSuccess: `Successfully saved ${project.title}`,
-          showSuccess: true,
-        })
-      )
-      .catch((error) => {
-        let message = 'An error occurred. Please try again.';
-        switch (error.code) {
-          case 'permission-denied':
-            message = 'You are not allowed to do this.';
-            break;
-        }
-        this.setState({ saveError: message, showError: true });
-      });
+  private async updateProject(project: Project, imagesToDelete?: Image[]) {
+    try {
+      await this.projectService
+        .updateProject(project, imagesToDelete)
+        .then(() =>
+          this.setState({
+            saveSuccess: `Successfully saved ${project.title}`,
+            showSuccess: true,
+          })
+        );
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   private uploadImages(project: Project): Promise<void> {
@@ -319,5 +380,15 @@ export default class ProjectEdit extends Component<
         image.src
       );
     });
+  }
+
+  private handleError(error: any) {
+    let message = 'An error occurred. Please try again.';
+    switch (error.code) {
+      case 'permission-denied':
+        message = 'You are not allowed to do this.';
+        break;
+    }
+    this.setState({ saveError: message, showError: true });
   }
 }

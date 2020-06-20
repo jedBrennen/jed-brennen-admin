@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Container, Button, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import FirebaseService, { FirebaseContext } from 'services/firebase.service';
 import ProjectService from 'services/project.service';
 import Project from 'models/project.model';
 import List from 'components/List/List';
 import ListItem from 'components/List/ListItem';
+import { PROJECT_ADD } from 'constants/routes';
 
 interface ProjectListState {
   isLoading: boolean;
@@ -38,7 +40,17 @@ export default class ProjectList extends Component<
   render() {
     return (
       <Container>
-        <h1 className="mb-3">Projects</h1>
+        <Row className="justify-content-between align-items-center">
+          <Col>
+            <h1 className="mb-3">Projects</h1>
+          </Col>
+          <Col className="text-right">
+            <Button variant="success" onClick={() => this.addProject()}>
+              <FontAwesomeIcon icon="plus" className="mr-2" />
+              Add Project
+            </Button>
+          </Col>
+        </Row>
         <List isLoading={this.state.isLoading}>
           {this.state.projects.map((project) => (
             <ListItem
@@ -59,6 +71,11 @@ export default class ProjectList extends Component<
     this.projectService
       .getProjects()
       .then((projects) => this.setState({ projects, isLoading: false }));
+  }
+
+  private addProject(): void {
+    const { history } = this.props;
+    history.push(PROJECT_ADD);
   }
 
   private navigateToProject(projectId: string): void {

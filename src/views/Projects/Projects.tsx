@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Switch, Route, withRouter, RouteComponentProps } from 'react-router';
 
+import { PROJECT_ADD, PROJECT_EDIT } from 'constants/routes';
 import ProjectList from 'views/Projects/ProjectList';
-import ProjectView from 'views/Projects/ProjectEdit';
+import ProjectEdit from 'views/Projects/ProjectEdit';
 
 class Projects extends Component<RouteComponentProps> {
   render() {
@@ -11,8 +12,12 @@ class Projects extends Component<RouteComponentProps> {
     return (
       <Switch>
         <Route
-          path={`${match.path}/:projectId`}
-          render={(props) => <ProjectView {...props} />}
+          path={PROJECT_ADD}
+          render={(props) => <ProjectEdit {...props} />}
+        />
+        <Route
+          path={PROJECT_EDIT}
+          render={(props) => <ProjectEdit {...props} />}
         />
         <Route
           path={match.path}

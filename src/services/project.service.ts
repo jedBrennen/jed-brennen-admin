@@ -29,9 +29,22 @@ export default class ProjectService {
     return undefined;
   }
 
-  public createProject(project: Project) {
-    // const projectRef = this.collection.doc();
-    // projectRef.set
+  public async createProject(project: Project): Promise<string> {
+    const batch = this.firebase.db.batch();
+    const projectRef = this.collection.doc();
+
+    const projectDoc = Project.converter.toFirestore(project);
+    batch.set(projectRef, projectDoc);
+
+    const imageCollection = projectRef.collection('images');
+    project.images.forEach((image) => {
+      const imageRef = imageCollection.doc(image.id || undefined);
+      const imageDoc = Image.converter.toFirestore(image);
+      batch.set(imageRef, imageDoc);
+    });
+
+    await batch.commit();
+    return projectRef.id;
   }
 
   public async updateProject(project: Project, imagesToDelete?: Image[]) {
