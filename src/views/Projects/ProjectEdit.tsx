@@ -49,7 +49,7 @@ export default class ProjectEdit extends Component<
     title: '',
     shortDescription: '',
     longDescription: '',
-    technology: [],
+    skills: [],
     images: [],
     github: '',
   };
@@ -158,7 +158,7 @@ export default class ProjectEdit extends Component<
                 variant="secondary"
                 name="technology"
                 label="Technology"
-                values={props.values.technology}
+                values={props.values.skills.map((skill) => skill.name)}
                 disabled={props.isSubmitting}
               />
               <FormikFormGroup<Project>

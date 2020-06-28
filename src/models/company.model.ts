@@ -1,10 +1,12 @@
 import * as Yup from 'yup';
 
 import FirebaseModel from 'models/firebase.model';
+import Skill, { SkillSchema } from 'models/skill.model';
 
 export default class Company extends FirebaseModel {
   public name: string;
   public roles: Role[];
+  public skills: Skill[];
   public shortDescription?: string;
   public longDescription?: string;
 
@@ -13,16 +15,17 @@ export default class Company extends FirebaseModel {
     fromServer: boolean,
     name: string,
     roles: Role[],
+    skills: Skill[],
     shortDescription?: string,
     longDescription?: string
   ) {
     super(id, fromServer);
     this.name = name;
     this.roles = roles;
+    this.skills = skills;
     this.shortDescription = shortDescription;
     this.longDescription = longDescription;
   }
-
   public static get converter(): firebase.firestore.FirestoreDataConverter<
     Company
   > {
@@ -30,6 +33,7 @@ export default class Company extends FirebaseModel {
       toFirestore: (company: Company) => {
         const data = FirebaseModel.toFirestore<Company>(company);
         delete data.roles;
+        delete data.skills;
         return data;
       },
       fromFirestore(
@@ -38,6 +42,7 @@ export default class Company extends FirebaseModel {
       ): Company {
         const company = FirebaseModel.fromFirestore<Company>(snapshot, options);
         company.roles = [];
+        company.skills = [];
         return company;
       },
     };
@@ -97,6 +102,9 @@ export const RoleSchema = Yup.object().shape({
 export const CompanySchema = Yup.object().shape({
   name: Yup.string().required('A title is required.'),
   roles: Yup.array(RoleSchema.required()).required(
+    'You need at least one role per company'
+  ),
+  skills: Yup.array(SkillSchema.required()).required(
     'You need at least one role per company'
   ),
 });

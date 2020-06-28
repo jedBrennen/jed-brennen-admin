@@ -53,6 +53,7 @@ export default class CompanyEdit extends Component<
     shortDescription: '',
     longDescription: '',
     roles: [],
+    skills: [],
   };
 
   constructor(props: RouteComponentProps, context: FirebaseService) {

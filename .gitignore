@@ -15,11 +15,13 @@
 public/assets
 
 # firebase
+.firebase
 .firebaserc
 firebase.*
 firestore.*
 storage.rules
 !*/**/firebase.*
+!firebase.json
 
 # misc
 .vscode

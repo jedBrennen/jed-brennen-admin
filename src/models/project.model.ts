@@ -2,28 +2,29 @@ import * as Yup from 'yup';
 
 import FirebaseModel from 'models/firebase.model';
 import Image, { ImageSchema } from 'models/image.model';
+import Skill, { SkillSchema } from 'models/skill.model';
 
 export default class Project extends FirebaseModel {
   public title: string;
-  public technology: string[];
+  public skills: Skill[];
   public images: Image[];
   public shortDescription?: string;
   public longDescription?: string;
   public github?: string;
 
   constructor(
-    id: string,
-    fromServer: boolean,
-    title: string,
-    technology: string[],
-    images: Image[],
+    id: string = '',
+    fromServer: boolean = false,
+    title: string = '',
+    skills: Skill[] = [],
+    images: Image[] = [],
     shortDescription?: string,
     longDescription?: string,
     github?: string
   ) {
     super(id, fromServer);
     this.title = title;
-    this.technology = technology;
+    this.skills = skills;
     this.images = images;
     this.shortDescription = shortDescription;
     this.longDescription = longDescription;
@@ -36,6 +37,7 @@ export default class Project extends FirebaseModel {
     return {
       toFirestore: (project: Project) => {
         const data = FirebaseModel.toFirestore<Project>(project);
+        delete data.skills;
         delete data.images;
         return data;
       },
@@ -44,6 +46,7 @@ export default class Project extends FirebaseModel {
         options: firebase.firestore.SnapshotOptions
       ): Project => {
         const project = FirebaseModel.fromFirestore<Project>(snapshot, options);
+        project.skills = [];
         project.images = [];
         return project;
       },
@@ -53,6 +56,7 @@ export default class Project extends FirebaseModel {
 
 export const ProjectSchema = Yup.object().shape({
   title: Yup.string().required('A title is required.'),
+  skills: Yup.array(SkillSchema),
   images: Yup.array(ImageSchema),
   github: Yup.string().url(),
 });
