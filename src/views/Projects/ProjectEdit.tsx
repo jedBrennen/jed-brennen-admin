@@ -51,6 +51,7 @@ export default class ProjectEdit extends Component<
     longDescription: '',
     technology: [],
     images: [],
+    github: '',
   };
 
   constructor(props: RouteComponentProps, context: FirebaseService) {
@@ -159,6 +160,15 @@ export default class ProjectEdit extends Component<
                 label="Technology"
                 values={props.values.technology}
                 disabled={props.isSubmitting}
+              />
+              <FormikFormGroup<Project>
+                formikProps={props}
+                name="github"
+                label="Github URL"
+                placeholder="Add the github repo for this project"
+                type="url"
+                value={props.values.github}
+                error={props.errors.github}
               />
               <Form.Group>
                 <Form.Label>Images</Form.Label>

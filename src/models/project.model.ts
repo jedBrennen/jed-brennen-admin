@@ -9,6 +9,7 @@ export default class Project extends FirebaseModel {
   public images: Image[];
   public shortDescription?: string;
   public longDescription?: string;
+  public github?: string;
 
   constructor(
     id: string,
@@ -17,7 +18,8 @@ export default class Project extends FirebaseModel {
     technology: string[],
     images: Image[],
     shortDescription?: string,
-    longDescription?: string
+    longDescription?: string,
+    github?: string
   ) {
     super(id, fromServer);
     this.title = title;
@@ -25,6 +27,7 @@ export default class Project extends FirebaseModel {
     this.images = images;
     this.shortDescription = shortDescription;
     this.longDescription = longDescription;
+    this.github = github;
   }
 
   public static get converter(): firebase.firestore.FirestoreDataConverter<
@@ -51,4 +54,5 @@ export default class Project extends FirebaseModel {
 export const ProjectSchema = Yup.object().shape({
   title: Yup.string().required('A title is required.'),
   images: Yup.array(ImageSchema),
+  github: Yup.string().url(),
 });

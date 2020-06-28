@@ -63,7 +63,7 @@ export default class Login extends Component<RouteComponentProps, LoginState> {
             password: '',
           };
           return (
-            <Container className="h-100">
+            <Container className="login-container">
               <Row className="justify-content-center align-items-center h-100">
                 <Card className="login-form">
                   <Card.Body>
@@ -120,8 +120,8 @@ export default class Login extends Component<RouteComponentProps, LoginState> {
                             </span>
                           </Form.Group>
                           <SubmitButton
-                            label="Save"
-                            submittingLabel="Saving"
+                            label="Login"
+                            submittingLabel="Logging In"
                             isSubmitting={props.isSubmitting}
                           />
                         </Form>

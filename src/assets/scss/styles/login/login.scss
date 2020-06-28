@@ -1,4 +1,10 @@
-.login-form {
-  margin-bottom: 15rem;
-  width: 50%;
+.login {
+  &-container {
+    height: calc(100vh - 71px);
+    padding-bottom: 8rem;
+  }
+
+  &-form {
+    width: 50%;
+  }
 }

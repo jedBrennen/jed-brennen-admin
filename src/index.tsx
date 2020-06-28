@@ -1,4 +1,3 @@
-import 'assets/scss/custom.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -7,6 +6,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import * as serviceWorker from './serviceWorker';
 import App from 'App';
+import 'assets/scss/custom.scss';
 
 library.add(fas, far);
 
